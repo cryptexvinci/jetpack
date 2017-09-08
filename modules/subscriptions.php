@@ -77,6 +77,10 @@ class Jetpack_Subscriptions {
 		add_action( 'transition_post_status', array( $this, 'maybe_send_subscription_email' ), 10, 3 );
 
 		add_filter( 'jetpack_published_post_flags', array( $this, 'set_post_flags' ), 10, 2 );
+
+		// Gutenberg!
+		add_action( 'init', array( __CLASS__, 'register_block_type' ) );
+		add_action( 'enqueue_block_editor_assets', array( __CLASS__, 'enqueue_block_editor_assets' ) );
 	}
 
 	/**
@@ -729,6 +733,263 @@ class Jetpack_Subscriptions {
 		}
 	}
 
+	public static function register_block_type() {
+		register_block_type( 'jetpack/subscription-form', array(
+			'render_callback' => 'jetpack_do_subscription_form',
+		) );
+	}
+
+	public static function enqueue_block_editor_assets() {
+		wp_register_script(
+			'jetpack-block-subscription-form',
+			null,
+			array( 'wp-blocks', 'wp-element' )
+		);
+		wp_enqueue_script( 'jetpack-block-subscription-form' );
+
+		ob_start();
+		self::block_editor_script();
+		$content = ob_get_clean();
+
+		wp_script_add_data( 'jetpack-block-subscription-form', 'data', $content );
+	}
+
+	public static function block_editor_script() {
+		?>
+		// <script>
+			( function( wp ) {
+				wp.blocks.registerBlockType( 'jetpack/subscription-form', {
+					title : '<?php echo esc_js( __( 'Subscription Form', 'jetpack' ) ); ?>',
+					icon : 'email-alt',
+					category : 'common',
+					attributes : {
+						title : {
+							type : 'string',
+							default : '<?php echo esc_js( __( 'Subscribe to Blog via Email', 'jetpack' ) ); ?>'
+						},
+						subscribe_text : {
+							type : 'string',
+							default : '<?php echo esc_js( __( 'Enter your email address to subscribe to this blog and receive notifications of new posts by email.', 'jetpack' ) ); ?>'
+						},
+						subscribe_placeholder : {
+							type : 'string',
+							default : '<?php echo esc_js( __( 'Email Address', 'jetpack' ) ); ?>'
+						},
+						subscribe_button : {
+							type : 'string',
+							default : '<?php echo esc_js( esc_html__( 'Subscribe', 'jetpack' ) ); ?>'
+						},
+						success_message : {
+							type : 'string',
+							default : '<?php echo esc_js( __( "Success! An email was just sent to confirm your subscription. Please find the email now and click 'Confirm Follow' to start subscribing.", 'jetpack' ) ); ?>'
+						},
+						show_subscribers_total : {
+							type : 'bool',
+							default : true
+						}
+					},
+
+					edit : function( props ) {
+						var el = wp.element.createElement;
+						function handleTitleChange( value ) {
+							props.setAttributes({
+								title : value
+							});
+						}
+						function handleSubscribeTextChange( value ) {
+							props.setAttributes({
+								subscribe_text : value
+							});
+						}
+						function handleSubscribePlaceholderChange( value ) {
+							props.setAttributes({
+								subscribe_placeholder : value
+							});
+						}
+						function handleSubscribeButtonChange( value ) {
+							props.setAttributes({
+								subscribe_button : value
+							});
+						}
+						function handleSuccessMessageChange( value ) {
+							props.setAttributes({
+								success_message : value
+							});
+						}
+						function handleShowSubscribersTotalChange( value ) {
+							props.setAttributes({
+								show_subscribers_change : !! value
+							});
+						}
+
+						return [
+							el(
+								'div',
+								{ key : 'jetpack/subscription-form/preview' },
+								[
+									!! props.attributes.title && el(
+										'h2',
+										{
+											key : 'jetpack/subscription-form/title/preview',
+											className : 'widgettitle'
+										},
+										props.attributes.title
+									),
+									el(
+										'form',
+										{ key : 'jetpack/subscription-form/preview' },
+										el(
+											'fieldset',
+											{ disabled : true },
+											[
+												!! props.attributes.subscribe_text && el(
+													'div',
+													{
+														key : 'jetpack/subscription-form/subscribe_text/preview',
+														id : 'subscribe-text'
+													},
+													el(
+														'p',
+														null,
+														props.attributes.subscribe_text
+													)
+												),
+												!! props.attributes.show_subscribers_total && el(
+													'p',
+													{ key : 'jetpack/subscription-form/show_subscribers_total/preview' },
+													('<?php echo esc_js( __( 'Join %s other subscribers', 'jetpack' ) ); ?>').replace( '%s', '___' )
+												),
+												el(
+													'p',
+													{
+														key : 'jetpack/subscription-form/email-field-wrapper',
+														id : 'subscribe-email'
+													},
+													[
+														el(
+															'label',
+															{
+																key : 'jetpack/subscription-form/subscribe_placeholder/label',
+																id : 'jetpack-subscribe-label'
+															},
+															props.attributes.subscribe_placeholder
+														),
+														el(
+															'input',
+															{
+																key : 'jetpack/subscription-form/subscribe-placeholder/preview',
+																type : 'email',
+																required : 'required',
+																className : 'required',
+																placeholder : props.attributes.subscribe_placeholder,
+																style : { display : 'block' }
+															}
+														)
+													]
+												),
+												el(
+													'p',
+													{
+														key : 'jetpack/subscription-form/subscribe-submit-wrapper',
+														id : 'subscribe-submit'
+													},
+													el(
+														'input',
+														{
+															key : 'jetpack/subscription-form/subscribe_button/preview',
+															type : 'submit',
+															value : props.attributes.subscribe_button
+														}
+													)
+												)
+											]
+										)
+									)
+								]
+							),
+
+							!! props.focus && el(
+								wp.blocks.InspectorControls,
+								{ key : 'inspector' },
+								[
+									el(
+										wp.blocks.BlockDescription,
+										{ key : 'jetpack/subscription-form/description' },
+										el(
+											'p',
+											null,
+											'<?php echo esc_js( 'Subscription Form settings', 'jetpack' ); ?>'
+										)
+									),
+									el(
+										wp.blocks.InspectorControls.TextControl,
+										{
+											key : 'jetpack/subscription-form/title/edit',
+											label : '<?php echo esc_js( __( 'Widget title:', 'jetpack' ) ); ?>',
+											value : props.attributes.title,
+											onChange : handleTitleChange
+										}
+									),
+									el(
+										wp.blocks.InspectorControls.TextareaControl,
+										{
+											key : 'jetpack/subscription-form/subscribe_text/edit',
+											label : '<?php echo esc_js( __( 'Optional text to display to your readers:', 'jetpack' ) ); ?>',
+											value : props.attributes.subscribe_text,
+											onChange : handleSubscribeTextChange
+										}
+									),
+									el(
+										wp.blocks.InspectorControls.TextControl,
+										{
+											key : 'jetpack/subscription-form/subscribe_placeholder/edit',
+											label : '<?php echo esc_js( __( 'Subscribe Placeholder:', 'jetpack' ) ); ?>',
+											value : props.attributes.subscribe_placeholder,
+											onChange : handleSubscribePlaceholderChange
+										}
+									),
+									el(
+										wp.blocks.InspectorControls.TextControl,
+										{
+											key : 'jetpack/subscription-form/subscribe_button/edit',
+											label : '<?php echo esc_js( __( 'Subscribe Button:', 'jetpack' ) ); ?>',
+											value : props.attributes.subscribe_button,
+											onChange : handleSubscribeButtonChange
+										}
+									),
+									el(
+										wp.blocks.InspectorControls.TextareaControl,
+										{
+											key : 'jetpack/subscription-form/success_message/edit',
+											label : '<?php echo esc_js( __( 'Success Message Text:', 'jetpack' ) ); ?>',
+											value : props.attributes.success_message,
+											onChange : handleSuccessMessageChange
+										}
+									),
+									el(
+										wp.blocks.InspectorControls.CheckboxControl,
+										{
+											key : 'jetpack/subscription-form/show_subscribers_total/edit',
+											label : '<?php echo esc_js( __( 'Show total number of subscribers?', 'jetpack' ) ); ?>',
+											checked : props.attributes.show_subscribers_total,
+											onChange : handleShowSubscribersTotalChange
+										}
+									)
+								]
+							)
+						];
+					},
+
+					save : function() {
+						return null;
+					}
+
+				} );
+			} )( window.wp );
+			// </script>
+		<?php
+
+	}
 }
 
 Jetpack_Subscriptions::init();
