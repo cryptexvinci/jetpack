@@ -44,11 +44,6 @@
 					subscribe_text: value
 				});
 			}
-			function handleSubscribePlaceholderChange(value) {
-				props.setAttributes({
-					subscribe_placeholder: value
-				});
-			}
 			function handleSubscribeButtonChange(value) {
 				props.setAttributes({
 					subscribe_button: value
@@ -65,21 +60,26 @@
 				});
 			}
 
-			return [el('div', { key: 'jetpack/subscription-form/preview', className : 'subscription-form' }, [!!props.attributes.title && el('h2', {
+			return [el('div', {
+				key: 'jetpack/subscription-form/preview',
+				className: 'subscription-form'
+			}, [!!props.attributes.title && el('h2', {
 				key: 'jetpack/subscription-form/title/preview',
 				className: 'subscription-form__title'
 			}, props.attributes.title), el('form', { key: 'jetpack/subscription-form/preview' }, el('fieldset', { disabled: true }, [!!props.attributes.subscribe_text && el('div', {
 				key: 'jetpack/subscription-form/subscribe_text/preview',
 				id: 'subscribe-text',
-				className : 'subscription-form__text'
-			}, el('p', null, props.attributes.subscribe_text)), !!props.attributes.show_subscribers_total && el('p', { key: 'jetpack/subscription-form/show_subscribers_total/preview', className : 'subscription-form__subscribers' }, i18n['Join %s other subscribers'].replace('%s', '___')), el('p', {
+				className: 'subscription-form__text'
+			}, el('p', null, props.attributes.subscribe_text)), !!props.attributes.show_subscribers_total && el('p', {
+				key: 'jetpack/subscription-form/show_subscribers_total/preview',
+				className: 'subscription-form__subscribers'
+			}, i18n['Join %s other subscribers'].replace('%s', '___')), el('p', {
 				key: 'jetpack/subscription-form/email-field-wrapper',
-				id: 'subscribe-email',
-				className : 'subscription-form__subscribers'
+				id: 'subscribe-email'
 			}, [el('label', {
 				key: 'jetpack/subscription-form/subscribe_placeholder/label',
 				id: 'jetpack-subscribe-label',
-				className : 'subscription-form__email-label'
+				className: 'subscription-form__email-label'
 			}, props.attributes.subscribe_placeholder), el('input', {
 				key: 'jetpack/subscription-form/subscribe-placeholder/preview',
 				type: 'email',
@@ -93,11 +93,10 @@
 			}, el('input', {
 				key: 'jetpack/subscription-form/subscribe_button/preview',
 				type: 'submit',
-				className : 'subscription-form__submit',
 				value: props.attributes.subscribe_button
-			}))]))]), !!props.focus && el(wp.blocks.InspectorControls, { key: 'inspector' }, [el(wp.blocks.BlockDescription, { key: 'jetpack/subscription-form/description' }, el('p', null, i18n['Subscription Form settings'])), el(wp.blocks.InspectorControls.TextControl, {
+			}))]))]), !!props.focus && el(wp.blocks.InspectorControls, { key: 'inspector' }, [el(wp.blocks.BlockDescription, { key: 'jetpack/subscription-form/description' }, el('h3', null, i18n['Subscription Form settings'])), el(wp.blocks.InspectorControls.TextControl, {
 				key: 'jetpack/subscription-form/title/edit',
-				label: i18n['Widget title:'],
+				label: 'Title',
 				value: props.attributes.title,
 				onChange: handleTitleChange
 			}), el(wp.blocks.InspectorControls.TextareaControl, {
@@ -105,16 +104,6 @@
 				label: i18n['Optional text to display to your readers:'],
 				value: props.attributes.subscribe_text,
 				onChange: handleSubscribeTextChange
-			}), el(wp.blocks.InspectorControls.TextControl, {
-				key: 'jetpack/subscription-form/subscribe_placeholder/edit',
-				label: i18n['Subscribe Placeholder:'],
-				value: props.attributes.subscribe_placeholder,
-				onChange: handleSubscribePlaceholderChange
-			}), el(wp.blocks.InspectorControls.TextControl, {
-				key: 'jetpack/subscription-form/subscribe_button/edit',
-				label: i18n['Subscribe Button:'],
-				value: props.attributes.subscribe_button,
-				onChange: handleSubscribeButtonChange
 			}), el(wp.blocks.InspectorControls.TextareaControl, {
 				key: 'jetpack/subscription-form/success_message/edit',
 				label: i18n['Success Message Text:'],
