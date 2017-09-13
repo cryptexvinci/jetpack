@@ -93,7 +93,7 @@
 			}, el('input', {
 				key: 'jetpack/subscription-form/subscribe_button/preview',
 				type: 'submit',
-				className : 'subscription-form__submit'
+				className : 'subscription-form__submit',
 				value: props.attributes.subscribe_button
 			}))]))]), !!props.focus && el(wp.blocks.InspectorControls, { key: 'inspector' }, [el(wp.blocks.BlockDescription, { key: 'jetpack/subscription-form/description' }, el('p', null, i18n['Subscription Form settings'])), el(wp.blocks.InspectorControls.TextControl, {
 				key: 'jetpack/subscription-form/title/edit',
