@@ -734,6 +734,9 @@ class Jetpack_Subscriptions {
 	}
 
 	public static function register_block_type() {
+		if ( ! function_exists( 'register_block_type' ) ) {
+			return;
+		}
 		register_block_type( 'jetpack/subscription-form', array(
 			'render_callback' => 'jetpack_do_subscription_form',
 		) );
