@@ -65,18 +65,21 @@
 				});
 			}
 
-			return [el('div', { key: 'jetpack/subscription-form/preview' }, [!!props.attributes.title && el('h2', {
+			return [el('div', { key: 'jetpack/subscription-form/preview', className : 'subscription-form' }, [!!props.attributes.title && el('h2', {
 				key: 'jetpack/subscription-form/title/preview',
-				className: 'widgettitle'
+				className: 'subscription-form__title'
 			}, props.attributes.title), el('form', { key: 'jetpack/subscription-form/preview' }, el('fieldset', { disabled: true }, [!!props.attributes.subscribe_text && el('div', {
 				key: 'jetpack/subscription-form/subscribe_text/preview',
-				id: 'subscribe-text'
-			}, el('p', null, props.attributes.subscribe_text)), !!props.attributes.show_subscribers_total && el('p', { key: 'jetpack/subscription-form/show_subscribers_total/preview' }, i18n['Join %s other subscribers'].replace('%s', '___')), el('p', {
+				id: 'subscribe-text',
+				className : 'subscription-form__text'
+			}, el('p', null, props.attributes.subscribe_text)), !!props.attributes.show_subscribers_total && el('p', { key: 'jetpack/subscription-form/show_subscribers_total/preview', className : 'subscription-form__subscribers' }, i18n['Join %s other subscribers'].replace('%s', '___')), el('p', {
 				key: 'jetpack/subscription-form/email-field-wrapper',
-				id: 'subscribe-email'
+				id: 'subscribe-email',
+				className : 'subscription-form__subscribers'
 			}, [el('label', {
 				key: 'jetpack/subscription-form/subscribe_placeholder/label',
-				id: 'jetpack-subscribe-label'
+				id: 'jetpack-subscribe-label',
+				className : 'subscription-form__email-label'
 			}, props.attributes.subscribe_placeholder), el('input', {
 				key: 'jetpack/subscription-form/subscribe-placeholder/preview',
 				type: 'email',
@@ -90,6 +93,7 @@
 			}, el('input', {
 				key: 'jetpack/subscription-form/subscribe_button/preview',
 				type: 'submit',
+				className : 'subscription-form__submit'
 				value: props.attributes.subscribe_button
 			}))]))]), !!props.focus && el(wp.blocks.InspectorControls, { key: 'inspector' }, [el(wp.blocks.BlockDescription, { key: 'jetpack/subscription-form/description' }, el('p', null, i18n['Subscription Form settings'])), el(wp.blocks.InspectorControls.TextControl, {
 				key: 'jetpack/subscription-form/title/edit',
