@@ -8,7 +8,7 @@
 		attributes: {
 			title: {
 				type: 'string',
-				default: i18n['Subscribe to Blog via Email']
+				default: 'Subscribe to this site'
 			},
 			subscribe_text: {
 				type: 'string',
@@ -104,6 +104,11 @@
 				label: i18n['Optional text to display to your readers:'],
 				value: props.attributes.subscribe_text,
 				onChange: handleSubscribeTextChange
+			}), el(wp.blocks.InspectorControls.TextControl, {
+				key: 'jetpack/subscription-form/subscribe_button/edit',
+				label: 'Subscribe button',
+				value: props.attributes.subscribe_button,
+				onChange: handleSubscribeButtonChange
 			}), el(wp.blocks.InspectorControls.TextareaControl, {
 				key: 'jetpack/subscription-form/success_message/edit',
 				label: i18n['Success Message Text:'],

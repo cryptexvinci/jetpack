@@ -10,9 +10,13 @@
 	margin: 0 0 0;
 }
 
-.subscription-form__text p,
-p.subscription-form__subscribers {
+.subscription-form__text p {
 	font-size: 14px;
+}
+
+p.subscription-form__subscribers {
+	font-size: 12px;
+	color: #555d66;
 }
 
 .subscription-form__email-label {
@@ -26,8 +30,4 @@ p.subscription-form__subscribers {
 
 #subscribe-submit {
 	margin: 0;
-}
-
-.comment-subscription-form .subscribe-label {
-	display: inline !important;
 }
